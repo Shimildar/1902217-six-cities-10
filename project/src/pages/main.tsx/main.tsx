@@ -1,8 +1,7 @@
-import { PlaceCardClassName } from '../../const/enums';
+import { PlaceCardClassName, CityType } from '../../const/enums';
 import PlacesCardList from '../../components/places-card-list/places-card-list';
 import Header from '../../components/header/header';
 import Map from '../../components/map/map';
-import { CityType } from '../../const/enums';
 import { Offer } from '../../types/offer';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
@@ -91,7 +90,9 @@ export default function Main({ placeCount, offers }: MainScreenProps): JSX.Eleme
               </div>
             </section>
             <div className="cities__right-section">
-              <section className="cities__map map"><Map offers={sortedByCityOffers.AMSTERDAM} activeCard={activeCard} /></section>
+              <div className="cities__right-section">
+                <section className="cities__map map"><Map offers={sortedByCityOffers.AMSTERDAM} activeCard={activeCard} /></section>
+              </div>
             </div>
           </div>
         </div>

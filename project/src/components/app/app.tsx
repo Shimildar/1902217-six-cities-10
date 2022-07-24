@@ -8,7 +8,6 @@ import Room from '../../pages/room/room';
 import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../private-route/private-route';
 
-
 type AppScreenProps = {
   placeCount: number;
   offers: Offer[]

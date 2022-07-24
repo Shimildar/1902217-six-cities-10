@@ -2,6 +2,7 @@ import { Offer } from '../../types/offer';
 import { PlaceCardClassName, AppRoute } from '../../const/enums';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { convertRating } from '../../utils/common';
 
 type PlaceCardScreenProps = {
   offer: Offer
@@ -10,21 +11,8 @@ type PlaceCardScreenProps = {
 }
 
 export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: PlaceCardScreenProps): JSX.Element {
-  const { id, title, isPremium, isFavorite, previewImage, price, type } = offer;
+  const { id, title, isPremium, isFavorite, previewImage, price, type, rating } = offer;
   const [buttonState, setButtonState] = useState(isFavorite);
-
-  const onMouseOverHandler = () => {
-    if (getActiveCard) {
-      return getActiveCard(offer);
-    }
-  };
-
-  const onMouseLeaveHandler = () => {
-    if (getActiveCard) {
-      return getActiveCard(undefined);
-    }
-  };
-
 
   const buttonClickHandle = () => {
     setButtonState((prevButtonState) => !prevButtonState);
@@ -34,8 +22,16 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
     <article
       id={String(id)}
       className={`${placeCardClassName}__card place-card`}
-      onMouseOver={onMouseOverHandler}
-      onMouseLeave={onMouseLeaveHandler}
+      onMouseOver={() => {
+        if (getActiveCard) {
+          getActiveCard(offer);
+        }
+      }}
+      onMouseLeave={() => {
+        if (getActiveCard) {
+          getActiveCard(undefined);
+        }
+      }}
     >
       {
         isPremium &&
@@ -43,7 +39,12 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
       }
       <div className={`${placeCardClassName}__image-wrapper place-card__image-wrapper`}>
         <Link to={AppRoute.Room}>
-          <img className="place-card__image" src={previewImage} width={placeCardClassName === PlaceCardClassName.Main ? '260' : '150'} height={placeCardClassName === PlaceCardClassName.Main ? '200' : '110'} alt="Place" />
+          <img
+            className="place-card__image"
+            src={previewImage} width={placeCardClassName === PlaceCardClassName.Main ? '260' : '150'}
+            height={placeCardClassName === PlaceCardClassName.Main ? '200' : '110'}
+            alt="Place"
+          />
         </Link>
       </div>
       <div className={`${placeCardClassName === PlaceCardClassName.Favorite ? 'favorites__card-info' : ''} place-card__info`}>
@@ -52,7 +53,8 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
             <b className="place-card__price-value">&euro;{price}</b>
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
-          <button className={`place-card__bookmark-button ${buttonState && 'place-card__bookmark-button--active'} button`}
+          <button
+            className={`place-card__bookmark-button ${buttonState && 'place-card__bookmark-button--active'} button`}
             type="button"
             onClick={buttonClickHandle}
           >
@@ -64,7 +66,7 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
         </div>
         <div className="place-card__rating rating">
           <div className="place-card__stars rating__stars">
-            <span style={{ width: '80%' }}></span>
+            <span style={{ width: `${convertRating(rating)}%` }}></span>
             <span className="visually-hidden">Rating</span>
           </div>
         </div>

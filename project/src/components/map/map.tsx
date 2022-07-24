@@ -7,7 +7,7 @@ import { urlMarkerDefault, urlMarkerCurrent } from '../../const/map';
 
 type MapProps = {
   offers: Offer[]
-  activeCard: Offer | undefined
+  activeCard?: Offer | undefined
 }
 
 const defaultCustomIcon = new Icon({
@@ -46,6 +46,6 @@ export default function Map({ offers, activeCard }: MapProps): JSX.Element {
   });
 
   return (
-    <div className='.cities__map' style={{ height: '800px' }} ref={mapRef}></div>
+    <div style={{ height: '100%' }} ref={mapRef}></div>
   );
 }
