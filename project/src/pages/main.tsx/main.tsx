@@ -1,75 +1,28 @@
-import { PlaceCardClassName, CityType } from '../../const/enums';
+import { PlaceCardClassName } from '../../const/enums';
 import PlacesCardList from '../../components/places-card-list/places-card-list';
 import Header from '../../components/header/header';
+import CityList from '../../components/city-list/city-list';
 import Map from '../../components/map/map';
 import { Offer } from '../../types/offer';
-import { Link } from 'react-router-dom';
 import { useState } from 'react';
+import { useAppSelector } from '../../hooks/index';
 
-type MainScreenProps = {
-  placeCount: number;
-  offers: Offer[]
-}
-
-export default function Main({ placeCount, offers }: MainScreenProps): JSX.Element {
+export default function Main(): JSX.Element {
   const [activeCard, setActiveCard] = useState<Offer | undefined>(undefined);
-
-  const sortedByCityOffers = {
-    PARIS: offers.filter((card) => card.city.name === CityType.Paris),
-    COLOGNE: offers.filter((card) => card.city.name === CityType.Cologne),
-    BRUSSELS: offers.filter((card) => card.city.name === CityType.Brussels),
-    AMSTERDAM: offers.filter((card) => card.city.name === CityType.Amsterdam),
-    HAMBURG: offers.filter((card) => card.city.name === CityType.Hamburg),
-    DUSSELDORF: offers.filter((card) => card.city.name === CityType.Dusseldorf)
-  };
+  const city = useAppSelector((state) => state.city);
+  const currentOffers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === city);
 
   return (
     <div className="page page--gray page--main">
       <Header />
-
       <main className="page__main page__main--index">
         <h1 className="visually-hidden">Cities</h1>
-        <div className="tabs">
-          <section className="locations container">
-            <ul className="locations__list tabs__list">
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item" to="#todo">
-                  <span>Paris</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item" to="#todo">
-                  <span>Cologne</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item" to="#todo">
-                  <span>Brussels</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item tabs__item--active" to="#todo">
-                  <span>Amsterdam</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item" to="#todo">
-                  <span>Hamburg</span>
-                </Link>
-              </li>
-              <li className="locations__item">
-                <Link className="locations__item-link tabs__item" to="#todo">
-                  <span>Dusseldorf</span>
-                </Link>
-              </li>
-            </ul>
-          </section>
-        </div>
+        <CityList />
         <div className="cities">
           <div className="cities__places-container container">
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
-              <b className="places__found">{placeCount} places to stay in Amsterdam</b>
+              <b className="places__found">{currentOffers.length} places to stay in {city}</b>
               <form className="places__sorting" action="#" method="get">
                 <span className="places__sorting-caption">Sort by</span>
                 <span className="places__sorting-type" tabIndex={0}>
@@ -86,12 +39,14 @@ export default function Main({ placeCount, offers }: MainScreenProps): JSX.Eleme
                 </ul>
               </form>
               <div className="cities__places-list places__list tabs__content">
-                <PlacesCardList offers={offers} getActiveCard={setActiveCard} placeCardClassName={PlaceCardClassName.Main} />
+                <PlacesCardList offers={currentOffers} getActiveCard={setActiveCard} placeCardClassName={PlaceCardClassName.Main} />
               </div>
             </section>
             <div className="cities__right-section">
               <div className="cities__right-section">
-                <section className="cities__map map"><Map offers={sortedByCityOffers.AMSTERDAM} activeCard={activeCard} /></section>
+                <section className="cities__map map">
+                  {currentOffers.length !== 0 ? <Map offers={currentOffers} activeCard={activeCard} /> : ''}
+                </section>
               </div>
             </div>
           </div>

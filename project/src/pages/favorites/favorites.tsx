@@ -1,24 +1,13 @@
 import Header from '../../components/header/header';
 import FavoriteLocation from '../../components/favorite-location/favorite-location';
-import { AppRoute } from '../../const/enums';
-import { Offer } from '../../types/offer';
-import { CityType } from '../../const/enums';
+import { AppRoute, CityType } from '../../const/enums';
+import { getOffersByCity } from '../../utils/common';
 import { Link } from 'react-router-dom';
+import { useAppSelector } from '../../hooks/index';
 
-type FavoritesScreenProps = {
-  offers: Offer[]
-}
-
-export default function Favorites({ offers }: FavoritesScreenProps): JSX.Element {
-  const favoriteCards = offers.filter((offer) => offer.isFavorite);
-  const sortedFavoriteCards = {
-    PARIS: favoriteCards.filter((card) => card.city.name === CityType.Paris),
-    COLOGNE: favoriteCards.filter((card) => card.city.name === CityType.Cologne),
-    BRUSSELS: favoriteCards.filter((card) => card.city.name === CityType.Brussels),
-    AMSTERDAM: favoriteCards.filter((card) => card.city.name === CityType.Amsterdam),
-    HAMBURG: favoriteCards.filter((card) => card.city.name === CityType.Hamburg),
-    DUSSELDORF: favoriteCards.filter((card) => card.city.name === CityType.Dusseldorf)
-  };
+export default function Favorites(): JSX.Element {
+  const favoriteOffers = useAppSelector((state) => state.offers).filter((offer) => offer.isFavorite);
+  const sortedFavoriteCards = getOffersByCity(favoriteOffers);
 
   return (
     <div className="page">
@@ -29,24 +18,7 @@ export default function Favorites({ offers }: FavoritesScreenProps): JSX.Element
           <section className="favorites">
             <h1 className="favorites__title">Saved listing</h1>
             <ul className="favorites__list">
-              {
-                sortedFavoriteCards.PARIS.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.PARIS} city={CityType.Paris} /> : ''
-              }
-              {
-                sortedFavoriteCards.COLOGNE.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.COLOGNE} city={CityType.Cologne} /> : ''
-              }
-              {
-                sortedFavoriteCards.BRUSSELS.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.BRUSSELS} city={CityType.Brussels} /> : ''
-              }
-              {
-                sortedFavoriteCards.AMSTERDAM.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.AMSTERDAM} city={CityType.Amsterdam} /> : ''
-              }
-              {
-                sortedFavoriteCards.HAMBURG.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.HAMBURG} city={CityType.Hamburg} /> : ''
-              }
-              {
-                sortedFavoriteCards.DUSSELDORF.length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards.DUSSELDORF} city={CityType.Dusseldorf} /> : ''
-              }
+              {Array.from(Object.values(CityType)).map((city) => sortedFavoriteCards[city].length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards[city]} city={city} /> : '')}
             </ul>
           </section>
         </div>
