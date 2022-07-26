@@ -1,16 +1,20 @@
-import { PlaceCardClassName } from '../../const/enums';
+import { PlaceCardClassName, SortType } from '../../const/enums';
 import PlacesCardList from '../../components/places-card-list/places-card-list';
 import Header from '../../components/header/header';
 import CityList from '../../components/city-list/city-list';
+import SortList from '../../components/sort-list/sort-list';
 import Map from '../../components/map/map';
 import { Offer } from '../../types/offer';
 import { useState } from 'react';
 import { useAppSelector } from '../../hooks/index';
+import { getSortedOffers } from '../../utils/sort';
 
 export default function Main(): JSX.Element {
   const [activeCard, setActiveCard] = useState<Offer | undefined>(undefined);
+  const [activeSortItem, setActiveSortItem] = useState<string>(SortType.Popular);
   const city = useAppSelector((state) => state.city);
   const currentOffers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === city);
+  const sortedOffers = getSortedOffers(currentOffers, activeSortItem);
 
   return (
     <div className="page page--gray page--main">
@@ -23,23 +27,9 @@ export default function Main(): JSX.Element {
             <section className="cities__places places">
               <h2 className="visually-hidden">Places</h2>
               <b className="places__found">{currentOffers.length} places to stay in {city}</b>
-              <form className="places__sorting" action="#" method="get">
-                <span className="places__sorting-caption">Sort by</span>
-                <span className="places__sorting-type" tabIndex={0}>
-                  Popular
-                  <svg className="places__sorting-arrow" width="7" height="4">
-                    <use xlinkHref="#icon-arrow-select"></use>
-                  </svg>
-                </span>
-                <ul className="places__options places__options--custom places__options--opened">
-                  <li className="places__option places__option--active" tabIndex={0}>Popular</li>
-                  <li className="places__option" tabIndex={0}>Price: low to high</li>
-                  <li className="places__option" tabIndex={0}>Price: high to low</li>
-                  <li className="places__option" tabIndex={0}>Top rated first</li>
-                </ul>
-              </form>
+              <SortList activeSortItem={activeSortItem} setActiveSortItem={setActiveSortItem} />
               <div className="cities__places-list places__list tabs__content">
-                <PlacesCardList offers={currentOffers} getActiveCard={setActiveCard} placeCardClassName={PlaceCardClassName.Main} />
+                <PlacesCardList offers={sortedOffers} getActiveCard={setActiveCard} placeCardClassName={PlaceCardClassName.Main} />
               </div>
             </section>
             <div className="cities__right-section">
