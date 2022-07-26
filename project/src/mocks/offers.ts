@@ -30,7 +30,7 @@ export const offers: Offer[] = [
     title: 'Penthouse, 4-5 rooms + 5 balconies',
     isFavorite: true,
     isPremium: true,
-    rating: 4.1,
+    rating: 1,
     type: 'apartmen',
 
     bedrooms: 2,
@@ -85,7 +85,7 @@ export const offers: Offer[] = [
     title: 'Nice, cozy, warm big bed apartment',
     isFavorite: false,
     isPremium: true,
-    rating: 3.3,
+    rating: 4,
     type: 'house',
 
     bedrooms: 2,
@@ -138,7 +138,7 @@ export const offers: Offer[] = [
     title: 'Nice, cozy, warm big bed apartment',
     isFavorite: false,
     isPremium: false,
-    rating: 3,
+    rating: 2,
     type: 'hotel',
 
     bedrooms: 4,
@@ -197,7 +197,7 @@ export const offers: Offer[] = [
     title: 'Loft Studio in the Central Area',
     isFavorite: true,
     isPremium: true,
-    rating: 3.7,
+    rating: 5,
     type: 'house',
 
     bedrooms: 3,

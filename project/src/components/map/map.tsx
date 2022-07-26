@@ -1,26 +1,14 @@
 import { Offer } from '../../types/offer';
+import { defaultCustomIcon, currentCustomIcon } from '../../const/map';
 import useMap from '../../hooks/useMap/useMap';
-import { Icon, Marker } from 'leaflet';
+import { Marker } from 'leaflet';
 import 'leaflet/dist/leaflet.css';
 import { useRef, useEffect } from 'react';
-import { urlMarkerDefault, urlMarkerCurrent } from '../../const/map';
 
 type MapProps = {
   offers: Offer[]
   activeCard?: Offer | undefined
 }
-
-const defaultCustomIcon = new Icon({
-  iconUrl: urlMarkerDefault,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40]
-});
-
-const currentCustomIcon = new Icon({
-  iconUrl: urlMarkerCurrent,
-  iconSize: [40, 40],
-  iconAnchor: [20, 40]
-});
 
 export default function Map({ offers, activeCard }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement | null>(null);
