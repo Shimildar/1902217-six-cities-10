@@ -35,7 +35,10 @@ export default function Main(): JSX.Element {
             <div className="cities__right-section">
               <div className="cities__right-section">
                 <section className="cities__map map">
-                  {currentOffers.length !== 0 ? <Map offers={currentOffers} activeCard={activeCard} /> : ''}
+                  {
+                    currentOffers[0]?.city &&
+                    <Map offers={currentOffers} activeCard={activeCard} city={currentOffers[0].city} />
+                  }
                 </section>
               </div>
             </div>

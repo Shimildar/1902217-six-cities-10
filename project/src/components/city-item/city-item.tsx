@@ -14,7 +14,7 @@ export default function CityItem({ city }: CityItemProps): JSX.Element {
       <div
         style={{ 'cursor': 'pointer' }}
         className={`locations__item-link tabs__item ${selectedCity === city ? 'tabs__item--active' : ''}`}
-        onClick={() => dispatch(selectCity({ city: city }))}
+        onClick={() => dispatch(selectCity(city))}
       >
         <span>{city}</span>
       </div>

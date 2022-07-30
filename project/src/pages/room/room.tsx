@@ -5,10 +5,10 @@ import ReviewForm from '../../components/review-form/review-form';
 import Map from '../../components/map/map';
 import { PlaceCardClassName } from '../../const/enums';
 import { comments } from '../../mocks/comments';
-import { offers } from '../../mocks/offers';
+import { useAppSelector } from '../../hooks/index';
 
 export default function Room(): JSX.Element {
-  const neighbourhoodOffers = offers.slice(0, 3);
+  const neighbourhoodOffers = useAppSelector((state) => state.offers).slice(0, 3);
 
   return (
     <div className="page">
@@ -140,7 +140,10 @@ export default function Room(): JSX.Element {
             </div>
           </div>
           <section className="property__map map">
-            <Map offers={neighbourhoodOffers} />
+            {
+              neighbourhoodOffers[0]?.city &&
+              <Map offers={neighbourhoodOffers} city={neighbourhoodOffers[0].city} />
+            }
           </section>
         </section>
         <div className="container">
