@@ -1,6 +1,9 @@
 import { createAction } from '@reduxjs/toolkit';
+import { Offer } from '../types/offer';
 
-export const selectCity = createAction('main/selectCity', (city) => ({
-  payload: city
-}));
+export const loadOffers = createAction<Offer[]>('main/loadOffers');
+
+export const selectCity = createAction<string>('main/selectCity');
+
+export const setOffersLoadedStatus = createAction<boolean>('main/setOffersLoadedStatus');
 

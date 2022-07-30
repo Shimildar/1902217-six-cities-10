@@ -1,4 +1,4 @@
-import { Offer } from '../../types/offer';
+import { Offer, City } from '../../types/offer';
 import { defaultCustomIcon, currentCustomIcon } from '../../const/map';
 import useMap from '../../hooks/useMap/useMap';
 import { Marker } from 'leaflet';
@@ -8,11 +8,12 @@ import { useRef, useEffect } from 'react';
 type MapProps = {
   offers: Offer[]
   activeCard?: Offer | undefined
+  city: City
 }
 
-export default function Map({ offers, activeCard }: MapProps): JSX.Element {
+export default function Map({ offers, activeCard, city }: MapProps): JSX.Element {
   const mapRef = useRef<HTMLDivElement | null>(null);
-  const map = useMap(mapRef, offers[0].city);
+  const map = useMap(mapRef, city);
 
   useEffect(() => {
     if (map) {
@@ -24,14 +25,14 @@ export default function Map({ offers, activeCard }: MapProps): JSX.Element {
 
         marker
           .setIcon(
-            activeCard === offer
+            activeCard !== undefined && activeCard === offer
               ? currentCustomIcon
               : defaultCustomIcon
           )
           .addTo(map);
       });
     }
-  });
+  }, [offers, activeCard, map]);
 
   return (
     <div style={{ height: '100%' }} ref={mapRef}></div>

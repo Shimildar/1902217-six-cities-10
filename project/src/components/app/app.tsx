@@ -6,8 +6,18 @@ import Favorites from '../../pages/favorites/favorites';
 import Room from '../../pages/room/room';
 import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../private-route/private-route';
+import LoadingScreen from '../../pages/loading-screen/loading-screen';
+import { useAppSelector } from '../../hooks';
 
 export default function App(): JSX.Element {
+  const { isOffersLoaded } = useAppSelector((state) => state);
+
+  if (isOffersLoaded) {
+    return (
+      <LoadingScreen />
+    );
+  }
+
   return (
     <BrowserRouter>
       <Routes>

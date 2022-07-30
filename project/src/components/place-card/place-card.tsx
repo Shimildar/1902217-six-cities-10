@@ -6,7 +6,7 @@ import { convertRating } from '../../utils/common';
 
 type PlaceCardScreenProps = {
   offer: Offer
-  getActiveCard: ((offer: Offer | undefined) => void) | undefined
+  getActiveCard?: ((offer: Offer | undefined) => void) | undefined
   placeCardClassName: string
 }
 
