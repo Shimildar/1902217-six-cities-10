@@ -1,18 +1,22 @@
-import { selectCity, loadOffers, setOffersLoadedStatus } from './action';
+import { selectCity, loadOffers, setOffersLoadedStatus, requireAuthorization, setError } from './action';
 import { createReducer } from '@reduxjs/toolkit';
-import { CityType } from '../const/enums';
+import { AuthorizationStatus, CityType } from '../const/enums';
 import { Offer } from '../types/offer';
 
 type InitialState = {
   city: string
   offers: Offer[]
   isOffersLoaded: boolean
+  authorizationStatus: AuthorizationStatus
+  error: string | null
 }
 
 const initialState: InitialState = {
   city: CityType.Paris,
   offers: [],
-  isOffersLoaded: false
+  isOffersLoaded: false,
+  authorizationStatus: AuthorizationStatus.Unknown,
+  error: null
 };
 
 const reducer = createReducer(initialState, (builder) => {
@@ -25,6 +29,12 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(selectCity, (state, action) => {
       state.city = action.payload;
+    })
+    .addCase(requireAuthorization, (state, action) => {
+      state.authorizationStatus = action.payload;
+    })
+    .addCase(setError, (state, action) => {
+      state.error = action.payload;
     });
 });
 

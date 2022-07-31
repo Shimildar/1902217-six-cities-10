@@ -10,9 +10,9 @@ import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { useAppSelector } from '../../hooks';
 
 export default function App(): JSX.Element {
-  const { isOffersLoaded } = useAppSelector((state) => state);
+  const { authorizationStatus, isOffersLoaded } = useAppSelector((state) => state);
 
-  if (isOffersLoaded) {
+  if (authorizationStatus === AuthorizationStatus.Unknown || isOffersLoaded) {
     return (
       <LoadingScreen />
     );
@@ -32,7 +32,7 @@ export default function App(): JSX.Element {
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={AuthorizationStatus.Auth}>
+            <PrivateRoute authorizationStatus={authorizationStatus}>
               <Favorites />
             </ PrivateRoute>
           }
