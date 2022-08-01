@@ -10,7 +10,8 @@ import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { useAppSelector } from '../../hooks';
 
 export default function App(): JSX.Element {
-  const { authorizationStatus, isOffersLoaded } = useAppSelector((state) => state);
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const isOffersLoaded = useAppSelector((state) => state.isOffersLoaded);
 
   if (authorizationStatus === AuthorizationStatus.Unknown || isOffersLoaded) {
     return (

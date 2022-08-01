@@ -1,10 +1,10 @@
 import { createAsyncThunk } from '@reduxjs/toolkit';
 import { AxiosInstance } from 'axios';
 import { AppDispatch, State } from '../types/state';
-import { loadOffers, requireAuthorization, setError, setOffersLoadedStatus } from './action';
+import { loadFavoriteOffers, loadOffers, setAuthorizationStatus, setError, setOffersLoadedStatus } from './action';
 import { Offer } from '../types/offer';
 import { APIRoute, AuthorizationStatus } from '../const/enums';
-import { dropToken, saveToken } from '../services/token';
+import { dropUserData, saveUserData } from '../services/user-data';
 import { UserData } from '../types/user-data';
 import { AuthData } from '../types/auth-data';
 import { TIMEOUT_SHOW_ERROR } from '../const/error';
@@ -24,6 +24,18 @@ export const fetchOffersAction = createAsyncThunk<void, undefined, {
   }
 );
 
+export const fetchFavoriteOffersAction = createAsyncThunk<void, undefined, {
+  dispatch: AppDispatch,
+  state: State,
+  extra: AxiosInstance
+}>(
+  'data/fetchFavoriteOffers',
+  async (_arg, { dispatch, extra: api }) => {
+    const { data } = await api.get<Offer[]>(APIRoute.Favorite);
+    dispatch(loadFavoriteOffers(data));
+  }
+);
+
 export const checkAuthAction = createAsyncThunk<void, undefined, {
   dispatch: AppDispatch,
   state: State,
@@ -33,9 +45,9 @@ export const checkAuthAction = createAsyncThunk<void, undefined, {
   async (_arg, { dispatch, extra: api }) => {
     try {
       await api.get(APIRoute.Login);
-      dispatch(requireAuthorization(AuthorizationStatus.Auth));
+      dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
     } catch {
-      dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+      dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
     }
   },
 );
@@ -47,9 +59,9 @@ export const loginAction = createAsyncThunk<void, AuthData, {
 }>(
   'user/login',
   async ({ login: email, password }, { dispatch, extra: api }) => {
-    const { data: { token } } = await api.post<UserData>(APIRoute.Login, { email, password });
-    saveToken(token);
-    dispatch(requireAuthorization(AuthorizationStatus.Auth));
+    const { data } = await api.post<UserData>(APIRoute.Login, { email, password });
+    saveUserData(data);
+    dispatch(setAuthorizationStatus(AuthorizationStatus.Auth));
   },
 );
 
@@ -61,13 +73,13 @@ export const logoutAction = createAsyncThunk<void, undefined, {
   'user/logout',
   async (_arg, { dispatch, extra: api }) => {
     await api.delete(APIRoute.Logout);
-    dropToken();
-    dispatch(requireAuthorization(AuthorizationStatus.NoAuth));
+    dropUserData();
+    dispatch(setAuthorizationStatus(AuthorizationStatus.NoAuth));
   },
 );
 
 export const clearErrorAction = createAsyncThunk(
-  'game/clearError',
+  'main/clearError',
   () => {
     setTimeout(
       () => store.dispatch(setError(null)),

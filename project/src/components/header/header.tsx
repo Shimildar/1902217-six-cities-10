@@ -1,20 +1,18 @@
 import { AppRoute, AuthorizationStatus } from '../../const/enums';
 import Logo from '../logo/logo';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
+import { getUserData } from '../../services/user-data';
 
 export default function Header(): JSX.Element {
-  const { authorizationStatus } = useAppSelector((state) => state);
-  const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const favoriteOffers = useAppSelector((state) => state.favoriteOffers);
 
   const dispatch = useAppDispatch();
-  const navigate = useNavigate();
+  const userData = getUserData();
 
-  const handleSignOut = () => {
-    dispatch(logoutAction());
-    navigate(AppRoute.Login);
-  };
+  const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
 
   return (
     <header className="header">
@@ -26,14 +24,16 @@ export default function Header(): JSX.Element {
           <nav className="header__nav">
             <ul className="header__nav-list">
               <li className="header__nav-item user">
-                <Link className="header__nav-link header__nav-link--profile" to={isAuth() ? '#todo' : AppRoute.Login}>
-                  <div className="header__avatar-wrapper user__avatar-wrapper">
+                <Link className="header__nav-link header__nav-link--profile" to={isAuth() ? AppRoute.Favorites : AppRoute.Login}>
+                  <div className="header__avatar-wrapper user__avatar-wrapper"
+                    style={{ backgroundImage: `url(${userData.avatarUrl})` }}
+                  >
                   </div>
                   {
                     isAuth() ?
                       <>
-                        <span className="header__user-name user__name">Oliver.conner@gmail.com</span>
-                        <span className="header__favorite-count">3</span>
+                        <span className="header__user-name user__name">{userData.name}</span>
+                        <span className="header__favorite-count">{favoriteOffers.length}</span>
                       </> :
                       <span className="header__login">Sign in</span>
                   }
@@ -45,7 +45,7 @@ export default function Header(): JSX.Element {
                     <div
                       className="header__nav-link"
                       style={{ cursor: 'pointer' }}
-                      onClick={handleSignOut}
+                      onClick={() => dispatch(logoutAction())}
                     >
                       <span className="header__signout">Sign out</span>
                     </div>

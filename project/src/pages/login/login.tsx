@@ -1,4 +1,4 @@
-import { FormEvent, useRef } from 'react';
+import { FormEvent, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import Logo from '../../components/logo/logo';
 import { AppRoute, CityType } from '../../const/enums';
@@ -10,6 +10,10 @@ import { AuthData } from '../../types/auth-data';
 export default function Login(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+  const [isPasswordError, setPasswordError] = useState<boolean>(false);
+
+  const re = /^(?=.*[A-Za-z])(?=.*[0-9]).{3,}$/;
+  const TIMEOUT_PASSWORD_ERROR = 3000;
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
@@ -20,19 +24,23 @@ export default function Login(): JSX.Element {
 
   const handleSubmit = (evt: FormEvent<HTMLFormElement>) => {
     evt.preventDefault();
+    setPasswordError(false);
 
     if (loginRef.current !== null && passwordRef.current !== null) {
-      onSubmit({
-        login: loginRef.current.value,
-        password: passwordRef.current.value,
-      });
-      navigate(AppRoute.Main);
-    }
-  };
+      if (passwordRef.current.value.length > 2 && re.test(passwordRef.current.value)) {
+        onSubmit({
+          login: loginRef.current.value,
+          password: passwordRef.current.value,
+        });
+        navigate(AppRoute.Main);
+      }
 
-  const handleCityClick = () => {
-    dispatch(selectCity(CityType.Amsterdam));
-    navigate(AppRoute.Main);
+      setPasswordError(true);
+      setTimeout(
+        () => (setPasswordError(false)),
+        TIMEOUT_PASSWORD_ERROR,
+      );
+    }
   };
 
   return (
@@ -75,7 +83,6 @@ export default function Login(): JSX.Element {
                   type="password"
                   name="password"
                   placeholder="Password"
-                  required
                 />
               </div>
               <button className="login__submit form__submit button" type="submit">Sign in</button>
@@ -86,11 +93,28 @@ export default function Login(): JSX.Element {
               <div
                 className="locations__item-link"
                 style={{ cursor: 'pointer' }}
-                onClick={handleCityClick}
+                onClick={() => {
+                  dispatch(selectCity(CityType.Amsterdam));
+                  navigate(AppRoute.Main);
+                }}
               >
                 <span>{CityType.Amsterdam}</span>
               </div>
             </div>
+            {
+              isPasswordError ?
+                <span style={{
+                  position: 'fixed',
+                  bottom: '350px',
+                  left: '400px',
+                  padding: '10px',
+                  backgroundColor: '#d96666',
+                  color: 'white',
+                  borderRadius: '5px'
+                }}
+                >The input field must contain at least one number and letter
+                </span> : ''
+            }
           </section>
         </div>
       </main>
