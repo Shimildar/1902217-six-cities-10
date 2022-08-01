@@ -1,18 +1,29 @@
-import { AppRoute, AuthorizationStatus } from '../../const/enums';
+import { APIRoute, AppRoute, AuthorizationStatus } from '../../const/enums';
 import Logo from '../logo/logo';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
 import { getUserData } from '../../services/user-data';
+import { api } from '../../store';
+import { Offer } from '../../types/offer';
+import { useState } from 'react';
 
 export default function Header(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const favoriteOffers = useAppSelector((state) => state.favoriteOffers);
-
+  const [favoriteCount, setFavoriteCount] = useState(0);
   const dispatch = useAppDispatch();
   const userData = getUserData();
+  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+
+  const getFavoriteOffers = async () => {
+    const { data } = await api.get<Offer[]>(APIRoute.Favorite);
+    return setFavoriteCount(data.length);
+  };
 
   const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
+
+  if (isAuth()) {
+    getFavoriteOffers();
+  }
 
   return (
     <header className="header">
@@ -33,7 +44,7 @@ export default function Header(): JSX.Element {
                     isAuth() ?
                       <>
                         <span className="header__user-name user__name">{userData.name}</span>
-                        <span className="header__favorite-count">{favoriteOffers.length}</span>
+                        <span className="header__favorite-count">{favoriteCount}</span>
                       </> :
                       <span className="header__login">Sign in</span>
                   }

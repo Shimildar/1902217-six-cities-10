@@ -1,4 +1,4 @@
-import { selectCity, loadOffers, setOffersLoadedStatus, setAuthorizationStatus, setError, loadFavoriteOffers } from './action';
+import { selectCity, loadOffers, setOffersLoadedStatus, setAuthorizationStatus, setError } from './action';
 import { createReducer } from '@reduxjs/toolkit';
 import { AuthorizationStatus, CityType } from '../const/enums';
 import { Offer } from '../types/offer';
@@ -28,9 +28,6 @@ const reducer = createReducer(initialState, (builder) => {
     })
     .addCase(loadOffers, (state, action) => {
       state.offers = action.payload;
-    })
-    .addCase(loadFavoriteOffers, (state, action) => {
-      state.favoriteOffers = action.payload;
     })
     .addCase(selectCity, (state, action) => {
       state.city = action.payload;

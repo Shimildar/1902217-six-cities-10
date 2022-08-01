@@ -4,8 +4,6 @@ import { Offer } from '../types/offer';
 
 export const loadOffers = createAction<Offer[]>('main/loadOffers');
 
-export const loadFavoriteOffers = createAction<Offer[]>('favorite/loadFavoriteOffers');
-
 export const selectCity = createAction<string>('main/selectCity');
 
 export const setOffersLoadedStatus = createAction<boolean>('main/setOffersLoadedStatus');
