@@ -6,13 +6,13 @@ import { useAppDispatch } from '../../hooks';
 import { selectCity } from '../../store/action';
 import { loginAction } from '../../store/api-actions';
 import { AuthData } from '../../types/auth-data';
+import './password-error-message.css';
 
 export default function Login(): JSX.Element {
   const loginRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [isPasswordError, setPasswordError] = useState<boolean>(false);
 
-  const re = /^(?=.*[A-Za-z])(?=.*[0-9]).{3,}$/;
   const TIMEOUT_PASSWORD_ERROR = 3000;
 
   const dispatch = useAppDispatch();
@@ -27,7 +27,7 @@ export default function Login(): JSX.Element {
     setPasswordError(false);
 
     if (loginRef.current !== null && passwordRef.current !== null) {
-      if (passwordRef.current.value.length > 2 && re.test(passwordRef.current.value)) {
+      if (passwordRef.current.value.length > 2) {
         onSubmit({
           login: loginRef.current.value,
           password: passwordRef.current.value,
@@ -85,7 +85,9 @@ export default function Login(): JSX.Element {
                   placeholder="Password"
                 />
               </div>
+
               <button className="login__submit form__submit button" type="submit">Sign in</button>
+              {isPasswordError ? <span className='password-error-message'>The input field must contain at least two character</span> : ''}
             </form>
           </section>
           <section className="locations locations--login locations--current">
@@ -101,20 +103,6 @@ export default function Login(): JSX.Element {
                 <span>{CityType.Amsterdam}</span>
               </div>
             </div>
-            {
-              isPasswordError ?
-                <span style={{
-                  position: 'fixed',
-                  bottom: '350px',
-                  left: '400px',
-                  padding: '10px',
-                  backgroundColor: '#d96666',
-                  color: 'white',
-                  borderRadius: '5px'
-                }}
-                >The input field must contain at least one number and letter
-                </span> : ''
-            }
           </section>
         </div>
       </main>

@@ -16,7 +16,7 @@ export default function Header(): JSX.Element {
 
   const getFavoriteOffers = async () => {
     const { data } = await api.get<Offer[]>(APIRoute.Favorite);
-    return setFavoriteCount(data.length);
+    setFavoriteCount(data.length);
   };
 
   const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
