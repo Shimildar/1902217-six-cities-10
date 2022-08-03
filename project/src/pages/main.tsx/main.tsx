@@ -6,14 +6,24 @@ import SortList from '../../components/sort-list/sort-list';
 import Map from '../../components/map/map';
 import { Offer } from '../../types/offer';
 import { useState } from 'react';
-import { useAppSelector } from '../../hooks/index';
+import { useAppDispatch, useAppSelector } from '../../hooks/index';
 import { getSortedOffers } from '../../utils/sort';
+import { fetchOffersAction } from '../../store/api-actions';
 
 export default function Main(): JSX.Element {
   const [activeCard, setActiveCard] = useState<Offer | undefined>(undefined);
   const [activeSortItem, setActiveSortItem] = useState<string>(SortType.Popular);
+
+  const dispatch = useAppDispatch();
+
+  const offers = useAppSelector((state) => state.offers);
+
+  if (offers.length === 0) {
+    dispatch(fetchOffersAction());
+  }
+
   const city = useAppSelector((state) => state.city);
-  const currentOffers = useAppSelector((state) => state.offers).filter((offer) => offer.city.name === city);
+  const currentOffers = offers.filter((offer) => offer.city.name === city);
   const sortedOffers = getSortedOffers(currentOffers, activeSortItem);
 
   return (

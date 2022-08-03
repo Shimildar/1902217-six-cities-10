@@ -1,5 +1,7 @@
+import dayjs from 'dayjs';
 import { SortType } from '../const/enums';
 import { Offer } from '../types/offer';
+import { Review } from '../types/review';
 
 const getWeightForNull = (itemA: number, itemB: number) => {
   if (itemA === null && itemB === null) {
@@ -54,4 +56,6 @@ const getSortedOffers = (offers: Offer[], sortType: string) => {
   return sortedOffers;
 };
 
-export { getSortedOffers };
+const sortReviews = (reviewA: Review, reviewB: Review) => dayjs(reviewB.date).diff(dayjs(reviewA.date));
+
+export { getSortedOffers, sortReviews };

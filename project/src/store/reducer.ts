@@ -6,7 +6,6 @@ import { Offer } from '../types/offer';
 type InitialState = {
   city: string
   offers: Offer[]
-  favoriteOffers: Offer[]
   isOffersLoaded: boolean
   authorizationStatus: AuthorizationStatus
   error: string | null
@@ -15,7 +14,6 @@ type InitialState = {
 const initialState: InitialState = {
   city: CityType.Paris,
   offers: [],
-  favoriteOffers: [],
   isOffersLoaded: false,
   authorizationStatus: AuthorizationStatus.Unknown,
   error: null

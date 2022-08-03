@@ -37,7 +37,8 @@ export enum APIRoute {
   Offers = '/hotels',
   Login = '/login',
   Logout = '/logout',
-  Favorite = '/favorite'
+  Favorite = '/favorite',
+  Comments = '/comments'
 }
 
 export { AppRoute, AuthorizationStatus, PlaceCardClassName, CityType, SortType };

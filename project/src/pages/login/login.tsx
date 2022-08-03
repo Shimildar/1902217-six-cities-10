@@ -13,6 +13,7 @@ export default function Login(): JSX.Element {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [isPasswordError, setPasswordError] = useState<boolean>(false);
 
+  const re = /^(?=.*[A-Za-z])(?=.*[0-9]).{3,}$/;
   const TIMEOUT_PASSWORD_ERROR = 3000;
 
   const dispatch = useAppDispatch();
@@ -27,7 +28,7 @@ export default function Login(): JSX.Element {
     setPasswordError(false);
 
     if (loginRef.current !== null && passwordRef.current !== null) {
-      if (passwordRef.current.value.length > 2) {
+      if (passwordRef.current.value.length >= 2 && re.test(passwordRef.current.value)) {
         onSubmit({
           login: loginRef.current.value,
           password: passwordRef.current.value,
