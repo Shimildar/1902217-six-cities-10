@@ -3,13 +3,14 @@ import { ChangeEvent } from 'react';
 type ReviewRatingStarsProps = {
   ratingStar: {
     title: string
-    value: string
+    value: number
   }
+  checkedInput: number | null
   fieldChangeHandle: ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
   formDisabled: boolean
 }
 
-export default function ReviewRatingStars({ ratingStar, fieldChangeHandle, formDisabled }: ReviewRatingStarsProps): JSX.Element {
+export default function ReviewRatingStars({ ratingStar, checkedInput, fieldChangeHandle, formDisabled }: ReviewRatingStarsProps): JSX.Element {
   const { title, value } = ratingStar;
 
   return (
@@ -20,6 +21,7 @@ export default function ReviewRatingStars({ ratingStar, fieldChangeHandle, formD
         id={`${value}-stars`}
         type="radio"
         onChange={fieldChangeHandle}
+        checked={value === Number(checkedInput)}
         disabled={formDisabled}
       />
       <label htmlFor={`${value}-stars`} className="reviews__rating-label form__rating-label" title={title}>

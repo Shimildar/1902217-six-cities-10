@@ -25,6 +25,8 @@ export default function Room(): JSX.Element {
   const dispatch = useAppDispatch();
   const isAuth = useAppSelector((state) => state.authorizationStatus) === AuthorizationStatus.Auth;
 
+  let offersForMap;
+
   const getOffer = async () => {
     try {
       const { data } = await api.get<Offer>(`${APIRoute.Offers}/${id}`);
@@ -37,7 +39,7 @@ export default function Room(): JSX.Element {
   const getNeighbourhoodOffers = async () => {
     try {
       const { data } = await api.get<Offer[]>(`${APIRoute.Offers}/${id}/nearby`);
-      setNeighbourhoodOffers(data.slice(0, 3));
+      setNeighbourhoodOffers(data);
     } catch (error) {
       dispatch(setError('Can not find nearby offers'));
     }
@@ -56,6 +58,10 @@ export default function Room(): JSX.Element {
     getOffer();
     getNeighbourhoodOffers();
     getComments();
+  }
+
+  if (offer !== null) {
+    offersForMap = neighbourhoodOffers.slice(0, 3).concat(offer);
   }
 
   return (
@@ -138,7 +144,7 @@ export default function Room(): JSX.Element {
                 </div>
               </div>
               <section className="property__reviews reviews">
-                {<ReviewList reviews={comments} />}
+                <ReviewList reviews={comments} />
                 {
                   isAuth && <ReviewForm setComments={setComments} />
                 }
@@ -147,8 +153,8 @@ export default function Room(): JSX.Element {
           </div>
           <section className="property__map map">
             {
-              neighbourhoodOffers.length !== 0 ?
-                <Map offers={neighbourhoodOffers} city={neighbourhoodOffers[0].city} /> : ''
+              offersForMap !== undefined && offer ?
+                <Map offers={offersForMap} activeCard={offer} city={offersForMap[0].city} /> : ''
             }
           </section>
         </section>

@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from 'react';
+import { ChangeEvent, FormEvent, useState } from 'react';
 import { useParams } from 'react-router-dom';
 import { APIRoute } from '../../const/enums';
 import { useAppDispatch } from '../../hooks';
@@ -12,23 +12,23 @@ const MAX_COMMENT_LENGTH = 300;
 const RatingData = [
   {
     title: 'perfect',
-    value: '5'
+    value: 5
   },
   {
     title: 'good',
-    value: '4'
+    value: 4
   },
   {
     title: 'not bad',
-    value: '3'
+    value: 3
   },
   {
     title: 'badly',
-    value: '2'
+    value: 2
   },
   {
     title: 'terribly',
-    value: '1'
+    value: 1
   }
 ];
 
@@ -37,27 +37,33 @@ type ReviewFormProps = {
 }
 
 export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Element {
-  const [formDisabled, setFormDisabled] = useState<boolean>(false);
-  const { id } = useParams();
-
-  const [formData, setFormData] = useState<ReviewData>({
+  const defaultFormData = {
     comment: '',
     rating: null
-  });
+  };
+
+  const { id } = useParams();
+  const [formDisabled, setFormDisabled] = useState<boolean>(false);
+  const [formData, setFormData] = useState<ReviewData>(defaultFormData);
 
   const dispatch = useAppDispatch();
 
-  const fieldChangeHandle = ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    const { name, value } = target;
+  const fieldChangeHandle = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    evt.preventDefault();
+    const { name, value } = evt.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (evt: FormEvent) => {
+    evt.preventDefault();
+
     try {
       setFormDisabled(true);
       const { data } = await api.post(`${APIRoute.Comments}/${Number(id)}`, formData);
-      setFormDisabled(false);
       setComments(data);
+      setFormDisabled(false);
+      setFormData(defaultFormData);
+
     } catch (error) {
       dispatch(setError('Can not send your comment'));
       setFormDisabled(false);
@@ -73,7 +79,7 @@ export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Elemen
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {
-          RatingData.map((data) => <ReviewRatingStars key={data.value} ratingStar={data} fieldChangeHandle={fieldChangeHandle} formDisabled={formDisabled} />)
+          RatingData.map((data) => <ReviewRatingStars key={data.value} ratingStar={data} checkedInput={formData.rating} fieldChangeHandle={fieldChangeHandle} formDisabled={formDisabled} />)
         }
       </div>
       <textarea
@@ -84,6 +90,7 @@ export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Elemen
         placeholder="Tell how was your stay, what you like and what can be improved"
         onChange={fieldChangeHandle}
         disabled={formDisabled}
+        value={formData.comment}
       />
       <div className="reviews__button-wrapper">
         <p className="reviews__help">

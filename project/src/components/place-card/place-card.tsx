@@ -1,5 +1,5 @@
 import { Offer } from '../../types/offer';
-import { PlaceCardClassName, AppRoute } from '../../const/enums';
+import { PlaceCardClassName } from '../../const/enums';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { convertRating } from '../../utils/common';

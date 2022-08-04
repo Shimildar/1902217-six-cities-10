@@ -13,7 +13,7 @@ export default function Login(): JSX.Element {
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const [isPasswordError, setPasswordError] = useState<boolean>(false);
 
-  const re = /^(?=.*[A-Za-z])(?=.*[0-9]).{3,}$/;
+  const re = /^(?=.*[A-Za-z])(?=.*[0-9]).{2,}$/;
   const TIMEOUT_PASSWORD_ERROR = 3000;
 
   const dispatch = useAppDispatch();
