@@ -5,12 +5,12 @@ type ReviewRatingStarsProps = {
     title: string
     value: number
   }
-  checkedInput: number | null
-  fieldChangeHandle: ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
+  isChecked: boolean
   formDisabled: boolean
+  fieldChangeHandle: ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void
 }
 
-export default function ReviewRatingStars({ ratingStar, checkedInput, fieldChangeHandle, formDisabled }: ReviewRatingStarsProps): JSX.Element {
+export default function ReviewRatingStars({ ratingStar, isChecked, formDisabled, fieldChangeHandle }: ReviewRatingStarsProps): JSX.Element {
   const { title, value } = ratingStar;
 
   return (
@@ -21,7 +21,7 @@ export default function ReviewRatingStars({ ratingStar, checkedInput, fieldChang
         id={`${value}-stars`}
         type="radio"
         onChange={fieldChangeHandle}
-        checked={value === Number(checkedInput)}
+        checked={isChecked}
         disabled={formDisabled}
       />
       <label htmlFor={`${value}-stars`} className="reviews__rating-label form__rating-label" title={title}>

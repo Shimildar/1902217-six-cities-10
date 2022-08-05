@@ -48,10 +48,9 @@ export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Elemen
 
   const dispatch = useAppDispatch();
 
-  const fieldChangeHandle = (evt: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
-    evt.preventDefault();
-    const { name, value } = evt.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const fieldChangeHandle = ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
+    const { name, value } = target;
+    setFormData({ ...formData, [name]: value });
   };
 
   const handleSubmit = async (evt: FormEvent) => {
@@ -79,7 +78,7 @@ export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Elemen
       <label className="reviews__label form__label" htmlFor="review">Your review</label>
       <div className="reviews__rating-form form__rating">
         {
-          RatingData.map((data) => <ReviewRatingStars key={data.value} ratingStar={data} checkedInput={formData.rating} fieldChangeHandle={fieldChangeHandle} formDisabled={formDisabled} />)
+          RatingData.map((data) => <ReviewRatingStars key={data.value} ratingStar={data} isChecked={data.value === Number(formData.rating)} formDisabled={formDisabled} fieldChangeHandle={fieldChangeHandle} />)
         }
       </div>
       <textarea

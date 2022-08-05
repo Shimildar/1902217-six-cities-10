@@ -153,7 +153,7 @@ export default function Room(): JSX.Element {
           </div>
           <section className="property__map map">
             {
-              offersForMap !== undefined && offer ?
+              offersForMap && offer ?
                 <Map offers={offersForMap} activeCard={offer} city={offersForMap[0].city} /> : ''
             }
           </section>
