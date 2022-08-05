@@ -1,5 +1,5 @@
 import { Offer } from '../../types/offer';
-import { PlaceCardClassName, AppRoute } from '../../const/enums';
+import { PlaceCardClassName } from '../../const/enums';
 import { Link } from 'react-router-dom';
 import { useState } from 'react';
 import { convertRating } from '../../utils/common';
@@ -14,7 +14,7 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
   const { id, title, isPremium, isFavorite, previewImage, price, type, rating } = offer;
   const [buttonState, setButtonState] = useState(isFavorite);
 
-  const buttonClickHandle = () => {
+  const handleBookmarkButtonClick = () => {
     setButtonState((prevButtonState) => !prevButtonState);
   };
 
@@ -38,7 +38,7 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
         <div className="place-card__mark"><span>Premium</span></div>
       }
       <div className={`${placeCardClassName}__image-wrapper place-card__image-wrapper`}>
-        <Link to={AppRoute.Room}>
+        <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"
             src={previewImage} width={placeCardClassName === PlaceCardClassName.Main ? '260' : '150'}
@@ -56,7 +56,7 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
           <button
             className={`place-card__bookmark-button ${buttonState && 'place-card__bookmark-button--active'} button`}
             type="button"
-            onClick={buttonClickHandle}
+            onClick={handleBookmarkButtonClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>
@@ -71,7 +71,7 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
           </div>
         </div>
         <h2 className="place-card__name">
-          <Link to={AppRoute.Room}>{title}</Link>
+          <Link to={`/offer/${id}`}>{title}</Link>
         </h2>
         <p className="place-card__type">{type}</p>
       </div>
