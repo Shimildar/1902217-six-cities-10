@@ -6,6 +6,7 @@ import { useAppDispatch } from '../../hooks';
 import { selectCity } from '../../store/action';
 import { loginAction } from '../../store/api-actions';
 import { AuthData } from '../../types/auth-data';
+import { getRandomIntInclusive } from '../../utils/common';
 import './password-error-message.css';
 
 export default function Login(): JSX.Element {
@@ -18,6 +19,14 @@ export default function Login(): JSX.Element {
 
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
+
+  const getRandomCity = () => {
+    const cities = Array.from(Object.values(CityType));
+
+    return cities[getRandomIntInclusive(0, 5)];
+  };
+
+  const randomCity = getRandomCity();
 
   const onSubmit = (authData: AuthData) => {
     dispatch(loginAction(authData));
@@ -33,7 +42,6 @@ export default function Login(): JSX.Element {
           login: loginRef.current.value,
           password: passwordRef.current.value,
         });
-        navigate(AppRoute.Main);
       }
 
       setPasswordError(true);
@@ -97,11 +105,11 @@ export default function Login(): JSX.Element {
                 className="locations__item-link"
                 style={{ cursor: 'pointer' }}
                 onClick={() => {
-                  dispatch(selectCity(CityType.Amsterdam));
+                  dispatch(selectCity(randomCity));
                   navigate(AppRoute.Main);
                 }}
               >
-                <span>{CityType.Amsterdam}</span>
+                <span>{randomCity}</span>
               </div>
             </div>
           </section>

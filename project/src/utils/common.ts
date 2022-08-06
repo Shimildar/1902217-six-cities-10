@@ -2,6 +2,12 @@ import dayjs from 'dayjs';
 import { Offer } from '../types/offer';
 import { CityType } from '../const/enums';
 
+function getRandomIntInclusive(min: number, max: number) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
+
 const humanizeDate = (date: string, format: string) => dayjs(date).format(format);
 
 const convertRating = (value: number) => {
@@ -38,4 +44,4 @@ const getOffersByCity = (offers: Offer[]) => ({
   [CityType.Dusseldorf]: offers.filter((offer) => offer.city.name === CityType.Dusseldorf)
 });
 
-export { humanizeDate, convertRating, getOffersByCity };
+export { humanizeDate, convertRating, getOffersByCity, getRandomIntInclusive };
