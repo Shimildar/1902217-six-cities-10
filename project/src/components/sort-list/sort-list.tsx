@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import { SortType } from '../../const/enums';
 import SortItem from '../sort-item/sort-item';
 
@@ -7,7 +7,7 @@ type SortListProps = {
   setActiveSortItem: (sortType: string) => void
 }
 
-export default function SortList({ activeSortItem, setActiveSortItem }: SortListProps): JSX.Element {
+function SortList({ activeSortItem, setActiveSortItem }: SortListProps): JSX.Element {
   const [isActive, setActive] = useState<boolean>(false);
   const selectSortType = (sortType: string) => {
     setActiveSortItem(sortType);
@@ -32,3 +32,5 @@ export default function SortList({ activeSortItem, setActiveSortItem }: SortList
     </div>
   );
 }
+
+export default memo(SortList);

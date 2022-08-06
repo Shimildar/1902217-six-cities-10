@@ -1,4 +1,4 @@
-import { Route, BrowserRouter, Routes } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 import { AppRoute, AuthorizationStatus } from '../../const/enums';
 import Main from '../../pages/main.tsx/main';
 import Login from '../../pages/login/login';
@@ -8,10 +8,14 @@ import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
 import PrivateRoute from '../private-route/private-route';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { useAppSelector } from '../../hooks';
+import HistoryRouter from '../history-route/history-route';
+import browserHistory from '../../browser-history';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getOffersLoadedData } from '../../store/data-process/selectors';
 
 export default function App(): JSX.Element {
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
-  const isOffersLoaded = useAppSelector((state) => state.isOffersLoaded);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
+  const isOffersLoaded = useAppSelector(getOffersLoadedData);
 
   if (authorizationStatus === AuthorizationStatus.Unknown || isOffersLoaded) {
     return (
@@ -20,7 +24,7 @@ export default function App(): JSX.Element {
   }
 
   return (
-    <BrowserRouter>
+    <HistoryRouter history={browserHistory}>
       <Routes>
         <Route
           path={AppRoute.Main}
@@ -47,7 +51,7 @@ export default function App(): JSX.Element {
           element={<NotFoundScreen />}
         />
       </Routes>
-    </BrowserRouter>
+    </HistoryRouter>
   );
 }
 

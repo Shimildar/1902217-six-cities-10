@@ -11,9 +11,10 @@ import { api } from '../../store';
 import { convertRating } from '../../utils/common';
 import RoomImage from '../../components/room-image/room-image';
 import Goods from '../../components/goods/goods';
-import { useAppDispatch, useAppSelector } from '../../hooks';
+import { useAppSelector } from '../../hooks';
 import { Review } from '../../types/review';
-import { setError } from '../../store/action';
+import { toast } from 'react-toastify';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
 export default function Room(): JSX.Element {
   const { id } = useParams();
@@ -22,8 +23,7 @@ export default function Room(): JSX.Element {
   const [comments, setComments] = useState<Review[]>([]);
 
   const navigate = useNavigate();
-  const dispatch = useAppDispatch();
-  const isAuth = useAppSelector((state) => state.authorizationStatus) === AuthorizationStatus.Auth;
+  const isAuth = useAppSelector(getAuthorizationStatus) === AuthorizationStatus.Auth;
 
   let offersForMap;
 
@@ -41,7 +41,7 @@ export default function Room(): JSX.Element {
       const { data } = await api.get<Offer[]>(`${APIRoute.Offers}/${id}/nearby`);
       setNeighbourhoodOffers(data);
     } catch (error) {
-      dispatch(setError('Can not find nearby offers'));
+      toast.warn('Can not find nearby offers');
     }
   };
 
@@ -50,7 +50,7 @@ export default function Room(): JSX.Element {
       const { data } = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
       setComments(data);
     } catch (error) {
-      dispatch(setError('Can not find comments'));
+      toast.warn('Can not find comments');
     }
   };
 

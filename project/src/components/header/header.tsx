@@ -6,13 +6,14 @@ import { logoutAction } from '../../store/api-actions';
 import { getUserData } from '../../services/user-data';
 import { api } from '../../store';
 import { Offer } from '../../types/offer';
-import { useState } from 'react';
+import { memo, useState } from 'react';
+import { getAuthorizationStatus } from '../../store/user-process/selectors';
 
-export default function Header(): JSX.Element {
+function Header(): JSX.Element {
   const [favoriteCount, setFavoriteCount] = useState(0);
   const dispatch = useAppDispatch();
   const userData = getUserData();
-  const authorizationStatus = useAppSelector((state) => state.authorizationStatus);
+  const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
   const getFavoriteOffers = async () => {
     const { data } = await api.get<Offer[]>(APIRoute.Favorite);
@@ -70,3 +71,4 @@ export default function Header(): JSX.Element {
   );
 }
 
+export default memo(Header);

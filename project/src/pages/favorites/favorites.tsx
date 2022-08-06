@@ -4,9 +4,10 @@ import { AppRoute, CityType } from '../../const/enums';
 import { getOffersByCity } from '../../utils/common';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/index';
+import { getOffers } from '../../store/data-process/selectors';
 
 export default function Favorites(): JSX.Element {
-  const favoriteOffers = useAppSelector((state) => state.offers).filter((offer) => offer.isFavorite);
+  const favoriteOffers = useAppSelector(getOffers).filter((offer) => offer.isFavorite);
   const sortedFavoriteCards = getOffersByCity(favoriteOffers);
 
   return (
