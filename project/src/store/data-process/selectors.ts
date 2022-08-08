@@ -5,3 +5,5 @@ import { State } from '../../types/state';
 
 export const getOffers = (state: State): Offer[] => state[NameSpace.Data].offers;
 export const getOffersLoadedData = (state: State): boolean => state[NameSpace.Data].isOffersLoaded;
+export const getFavoriteOffers = (state: State): Offer[] => state[NameSpace.Data].favoriteOffers;
+

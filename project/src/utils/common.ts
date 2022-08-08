@@ -44,4 +44,16 @@ const getOffersByCity = (offers: Offer[]) => ({
   [CityType.Dusseldorf]: offers.filter((offer) => offer.city.name === CityType.Dusseldorf)
 });
 
-export { humanizeDate, convertRating, getOffersByCity, getRandomIntInclusive };
+const replaceOffer = (offers: Offer[], currentOffer: Offer) => {
+  const index = offers.findIndex((offer) => offer.id === currentOffer.id);
+
+  const currentOffers = [
+    ...offers.slice(0, index),
+    currentOffer,
+    ...offers.slice(index + 1),
+  ];
+
+  return currentOffers;
+};
+
+export { humanizeDate, convertRating, getOffersByCity, getRandomIntInclusive, replaceOffer };

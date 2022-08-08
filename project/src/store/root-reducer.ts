@@ -1,6 +1,6 @@
 import { combineReducers } from '@reduxjs/toolkit';
 import { NameSpace } from '../const/enums';
-import { appAction } from './app-action-process/app-astion-process';
+import { appAction } from './app-action-process/app-action-process';
 import { offersData } from './data-process/data-process';
 import { userProcess } from './user-process/user-process';
 

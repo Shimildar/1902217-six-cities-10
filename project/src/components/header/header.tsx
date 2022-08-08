@@ -1,30 +1,20 @@
-import { APIRoute, AppRoute, AuthorizationStatus } from '../../const/enums';
+import { AppRoute, AuthorizationStatus } from '../../const/enums';
 import Logo from '../logo/logo';
 import { Link } from 'react-router-dom';
 import { useAppDispatch, useAppSelector } from '../../hooks';
 import { logoutAction } from '../../store/api-actions';
 import { getUserData } from '../../services/user-data';
-import { api } from '../../store';
-import { Offer } from '../../types/offer';
-import { memo, useState } from 'react';
+import { memo } from 'react';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { getFavoriteOffers } from '../../store/data-process/selectors';
 
 function Header(): JSX.Element {
-  const [favoriteCount, setFavoriteCount] = useState(0);
   const dispatch = useAppDispatch();
   const userData = getUserData();
+  const favoriteCount = useAppSelector(getFavoriteOffers).length;
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
-  const getFavoriteOffers = async () => {
-    const { data } = await api.get<Offer[]>(APIRoute.Favorite);
-    setFavoriteCount(data.length);
-  };
-
   const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
-
-  if (isAuth()) {
-    getFavoriteOffers();
-  }
 
   return (
     <header className="header">

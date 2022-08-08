@@ -3,7 +3,7 @@ import PlacesCardList from '../../components/places-card-list/places-card-list';
 import ReviewList from '../../components/review-list/review-list';
 import ReviewForm from '../../components/rewiew-form/review-form';
 import Map from '../../components/map/map';
-import { APIRoute, AppRoute, AuthorizationStatus, PlaceCardClassName } from '../../const/enums';
+import { APIRoute, AppRoute, AuthorizationStatus, FavoriteStatus, PlaceCardClassName } from '../../const/enums';
 import { Offer } from '../../types/offer';
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -11,16 +11,20 @@ import { api } from '../../store';
 import { convertRating } from '../../utils/common';
 import RoomImage from '../../components/room-image/room-image';
 import Goods from '../../components/goods/goods';
-import { useAppSelector } from '../../hooks';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { Review } from '../../types/review';
 import { toast } from 'react-toastify';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { replaceOffer } from '../../utils/common';
+import { setFavoriteStatusAction } from '../../store/api-actions';
 
 export default function Room(): JSX.Element {
   const { id } = useParams();
   const [offer, setOffer] = useState<Offer | null>(null);
   const [neighbourhoodOffers, setNeighbourhoodOffers] = useState<Offer[]>([]);
   const [comments, setComments] = useState<Review[]>([]);
+
+  const dispatch = useAppDispatch();
 
   const navigate = useNavigate();
   const isAuth = useAppSelector(getAuthorizationStatus) === AuthorizationStatus.Auth;
@@ -60,6 +64,20 @@ export default function Room(): JSX.Element {
     getComments();
   }
 
+  const handleFavoriteButtonClick = () => {
+    if (offer) {
+      dispatch(setFavoriteStatusAction({
+        currentId: offer.id,
+        status: offer.isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite
+      }));
+      setOffer({ ...offer, isFavorite: !offer.isFavorite });
+    }
+  };
+
+  const handleNeighbourhoodFavoriteClick = (currentOffer: Offer) => {
+    setNeighbourhoodOffers(replaceOffer(neighbourhoodOffers, { ...currentOffer, isFavorite: !currentOffer.isFavorite }));
+  };
+
   if (offer !== null) {
     offersForMap = neighbourhoodOffers.slice(0, 3).concat(offer);
   }
@@ -89,7 +107,11 @@ export default function Room(): JSX.Element {
                 <h1 className="property__name">
                   {offer?.title}
                 </h1>
-                <button className={`property__bookmark-button ${offer?.isFavorite && 'place-card__bookmark-button--active'} button`} type="button">
+                <button
+                  className={`property__bookmark-button ${offer?.isFavorite && 'property__bookmark-button--active'} button`}
+                  type="button"
+                  onClick={handleFavoriteButtonClick}
+                >
                   <svg className="property__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
@@ -164,7 +186,7 @@ export default function Room(): JSX.Element {
             <div className="near-places__list places__list">
               {
                 neighbourhoodOffers ?
-                  <PlacesCardList offers={neighbourhoodOffers} placeCardClassName={PlaceCardClassName.Main} /> : ''
+                  <PlacesCardList offers={neighbourhoodOffers} handleNeighbourhoodFavoriteClick={handleNeighbourhoodFavoriteClick} placeCardClassName={PlaceCardClassName.Main} /> : ''
               }
             </div>
           </section>

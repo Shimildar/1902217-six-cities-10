@@ -4,11 +4,12 @@ import { AppRoute, CityType } from '../../const/enums';
 import { getOffersByCity } from '../../utils/common';
 import { Link } from 'react-router-dom';
 import { useAppSelector } from '../../hooks/index';
-import { getOffers } from '../../store/data-process/selectors';
+import { getFavoriteOffers } from '../../store/data-process/selectors';
 
 export default function Favorites(): JSX.Element {
-  const favoriteOffers = useAppSelector(getOffers).filter((offer) => offer.isFavorite);
+  const favoriteOffers = useAppSelector(getFavoriteOffers);
   const sortedFavoriteCards = getOffersByCity(favoriteOffers);
+  const isEmpty = favoriteOffers.length === 0;
 
   return (
     <div className="page">
@@ -17,9 +18,9 @@ export default function Favorites(): JSX.Element {
       <main className="page__main page__main--favorites">
         <div className="page__favorites-container container">
           <section className="favorites">
-            <h1 className="favorites__title">Saved listing</h1>
+            <h1 className="favorites__title">{isEmpty ? 'There are no saved listing' : 'Saved listing'}</h1>
             <ul className="favorites__list">
-              {Array.from(Object.values(CityType)).map((city) => sortedFavoriteCards[city].length !== 0 ? <FavoriteLocation offers={sortedFavoriteCards[city]} city={city} /> : '')}
+              {!isEmpty && Array.from(Object.values(CityType)).map((city) => sortedFavoriteCards[city].length !== 0 ? <FavoriteLocation key={city} offers={sortedFavoriteCards[city]} city={city} /> : '')}
             </ul>
           </section>
         </div>

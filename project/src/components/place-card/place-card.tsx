@@ -1,21 +1,30 @@
 import { Offer } from '../../types/offer';
-import { PlaceCardClassName } from '../../const/enums';
+import { FavoriteStatus, PlaceCardClassName } from '../../const/enums';
 import { Link } from 'react-router-dom';
-import { useState } from 'react';
 import { convertRating } from '../../utils/common';
+import { useAppDispatch } from '../../hooks';
+import { setFavoriteStatusAction } from '../../store/api-actions';
 
 type PlaceCardScreenProps = {
   offer: Offer
   getActiveCard?: ((offer: Offer | undefined) => void) | undefined
+  handleNeighbourhoodFavoriteClick?: (offer: Offer) => void
   placeCardClassName: string
 }
 
-export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: PlaceCardScreenProps): JSX.Element {
+export default function PlaceCard({ offer, getActiveCard, handleNeighbourhoodFavoriteClick, placeCardClassName }: PlaceCardScreenProps): JSX.Element {
   const { id, title, isPremium, isFavorite, previewImage, price, type, rating } = offer;
-  const [buttonState, setButtonState] = useState(isFavorite);
+  const dispatch = useAppDispatch();
 
-  const handleBookmarkButtonClick = () => {
-    setButtonState((prevButtonState) => !prevButtonState);
+  const handleFavoriteButtonClick = () => {
+    dispatch(setFavoriteStatusAction({
+      currentId: id,
+      status: isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite
+    }));
+
+    if (handleNeighbourhoodFavoriteClick) {
+      handleNeighbourhoodFavoriteClick(offer);
+    }
   };
 
   return (
@@ -54,9 +63,9 @@ export default function PlaceCard({ offer, getActiveCard, placeCardClassName }: 
             <span className="place-card__price-text">&#47;&nbsp;night</span>
           </div>
           <button
-            className={`place-card__bookmark-button ${buttonState && 'place-card__bookmark-button--active'} button`}
+            className={`place-card__bookmark-button ${isFavorite && 'place-card__bookmark-button--active'} button`}
             type="button"
-            onClick={handleBookmarkButtonClick}
+            onClick={handleFavoriteButtonClick}
           >
             <svg className="place-card__bookmark-icon" width="18" height="19">
               <use xlinkHref="#icon-bookmark"></use>

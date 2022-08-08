@@ -47,4 +47,9 @@ enum NameSpace {
   AppAction = 'AppAction'
 }
 
-export { AppRoute, AuthorizationStatus, PlaceCardClassName, CityType, SortType, APIRoute, NameSpace };
+enum FavoriteStatus {
+  Favorite = 1,
+  NotFavorite = 0
+}
+
+export { AppRoute, AuthorizationStatus, PlaceCardClassName, CityType, SortType, APIRoute, NameSpace, FavoriteStatus };
