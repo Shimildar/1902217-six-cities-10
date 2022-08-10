@@ -6,12 +6,14 @@ import { logoutAction } from '../../store/api-actions';
 import { getUserData } from '../../services/user-data';
 import { memo } from 'react';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
-import { getFavoriteOffers } from '../../store/data-process/selectors';
 
-function Header(): JSX.Element {
+type HeaderProps = {
+  count: number
+}
+
+function Header({ count }: HeaderProps): JSX.Element {
   const dispatch = useAppDispatch();
   const userData = getUserData();
-  const favoriteCount = useAppSelector(getFavoriteOffers).length;
   const authorizationStatus = useAppSelector(getAuthorizationStatus);
 
   const isAuth = () => authorizationStatus === AuthorizationStatus.Auth;
@@ -35,7 +37,7 @@ function Header(): JSX.Element {
                     isAuth() ?
                       <>
                         <span className="header__user-name user__name">{userData.name}</span>
-                        <span className="header__favorite-count">{favoriteCount}</span>
+                        <span className="header__favorite-count">{count !== undefined ? count : ''}</span>
                       </> :
                       <span className="header__login">Sign in</span>
                   }

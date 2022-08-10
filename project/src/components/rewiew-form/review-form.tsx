@@ -1,14 +1,17 @@
-import { ChangeEvent, FormEvent, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import { APIRoute } from '../../const/enums';
-import { api } from '../../store';
-import { Review, ReviewData } from '../../types/review';
+import { ChangeEvent, FormEvent, useEffect, useState } from 'react';
+import { FormData } from '../../types/review';
 import ReviewRatingStars from '../review-rating-stars/review-rating-stars';
-import { toast } from 'react-toastify';
-// import { ToastContainer } from 'react-toastify';
+import { useAppDispatch } from '../../hooks';
+import { setCommentAction } from '../../store/api-actions';
 
 const MIN_COMMENT_LENGTH = 50;
 const MAX_COMMENT_LENGTH = 300;
+
+const defaultFormData = {
+  comment: '',
+  rating: null
+};
+
 const RatingData = [
   {
     title: 'perfect',
@@ -33,40 +36,32 @@ const RatingData = [
 ];
 
 type ReviewFormProps = {
-  setComments: (comments: Review[]) => void
+  id: number
 }
 
-export default function ReviewForm({ setComments }: ReviewFormProps): JSX.Element {
-  const defaultFormData = {
-    comment: '',
-    rating: null
-  };
+export default function ReviewForm({ id }: ReviewFormProps): JSX.Element {
+  const dispatch = useAppDispatch();
 
-  const { id } = useParams();
   const [formDisabled, setFormDisabled] = useState<boolean>(false);
-  const [formData, setFormData] = useState<ReviewData>(defaultFormData);
-
+  const [formData, setFormData] = useState<FormData>(defaultFormData);
 
   const fieldChangeHandle = ({ target }: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>): void => {
     const { name, value } = target;
     setFormData({ ...formData, [name]: value });
   };
 
-  const handleSubmit = async (evt: FormEvent) => {
+  const handleSubmit = (evt: FormEvent) => {
     evt.preventDefault();
 
-    try {
-      setFormDisabled(true);
-      const { data } = await api.post(`${APIRoute.Comments}/${Number(id)}`, formData);
-      setComments(data);
-      setFormDisabled(false);
-      setFormData(defaultFormData);
-
-    } catch (error) {
-      toast.warn('Can not send your comment');
-      setFormDisabled(false);
-    }
+    setFormDisabled(true);
+    dispatch(setCommentAction({ id, formData }));
+    setFormData(defaultFormData);
+    setFormDisabled(false);
   };
+
+  useEffect(() => {
+    setFormData(defaultFormData);
+  }, [id]);
 
   return (
     <form

@@ -1,15 +1,24 @@
-import { Review } from '../../types/review';
+import { useEffect } from 'react';
+import { useAppDispatch, useAppSelector } from '../../hooks';
+import { fetchCommentsAction } from '../../store/api-actions';
+import { getComments } from '../../store/data-process/selectors';
 import { sortReviews } from '../../utils/sort';
 import ReviewItem from '../review-item/review-item';
 
 type ReviewListProps = {
-  reviews: Review[]
+  id: number
 }
 
 const MAX_REVIEW_COUNT = 10;
 
-export default function ReviewList({ reviews }: ReviewListProps): JSX.Element {
+export default function ReviewList({ id }: ReviewListProps): JSX.Element {
+  const dispatch = useAppDispatch();
+  const reviews = useAppSelector(getComments);
   const sortedReviews = reviews.slice(0, MAX_REVIEW_COUNT).sort(sortReviews);
+
+  useEffect(() => {
+    dispatch(fetchCommentsAction(id));
+  }, [dispatch, id]);
 
   return (
     <>

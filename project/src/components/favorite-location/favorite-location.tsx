@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 import PlacesCardList from '../places-card-list/places-card-list';
 import { AppRoute } from '../../const/enums';
 import { Offer } from '../../types/offer';
-import { PlaceCardClassName } from '../../const/enums';
+import { PageType } from '../../const/enums';
 
 type FavoriteLocationScreenProps = {
   offers: Offer[]
@@ -20,7 +20,7 @@ export default function FavoriteLocation({ offers, city }: FavoriteLocationScree
         </div>
       </div>
       <div className="favorites__places">
-        <PlacesCardList offers={offers} placeCardClassName={PlaceCardClassName.Favorite} />
+        <PlacesCardList offers={offers} pageType={PageType.Favorite} />
       </div>
     </li>
   );

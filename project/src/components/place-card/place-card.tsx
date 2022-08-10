@@ -1,5 +1,5 @@
 import { Offer } from '../../types/offer';
-import { FavoriteStatus, PlaceCardClassName } from '../../const/enums';
+import { FavoriteStatus, PageType } from '../../const/enums';
 import { Link } from 'react-router-dom';
 import { convertRating } from '../../utils/common';
 import { useAppDispatch } from '../../hooks';
@@ -8,29 +8,26 @@ import { setFavoriteStatusAction } from '../../store/api-actions';
 type PlaceCardScreenProps = {
   offer: Offer
   getActiveCard?: ((offer: Offer | undefined) => void) | undefined
-  handleNeighbourhoodFavoriteClick?: (offer: Offer) => void
-  placeCardClassName: string
+  pageType: string
+  updateType?: string
 }
 
-export default function PlaceCard({ offer, getActiveCard, handleNeighbourhoodFavoriteClick, placeCardClassName }: PlaceCardScreenProps): JSX.Element {
+export default function PlaceCard({ offer, getActiveCard, pageType, updateType }: PlaceCardScreenProps): JSX.Element {
   const { id, title, isPremium, isFavorite, previewImage, price, type, rating } = offer;
   const dispatch = useAppDispatch();
 
   const handleFavoriteButtonClick = () => {
     dispatch(setFavoriteStatusAction({
       currentId: id,
-      status: isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite
+      status: isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite,
+      update: updateType
     }));
-
-    if (handleNeighbourhoodFavoriteClick) {
-      handleNeighbourhoodFavoriteClick(offer);
-    }
   };
 
   return (
     <article
       id={String(id)}
-      className={`${placeCardClassName}__card place-card`}
+      className={`${pageType}__card place-card`}
       onMouseOver={() => {
         if (getActiveCard) {
           getActiveCard(offer);
@@ -46,17 +43,17 @@ export default function PlaceCard({ offer, getActiveCard, handleNeighbourhoodFav
         isPremium &&
         <div className="place-card__mark"><span>Premium</span></div>
       }
-      <div className={`${placeCardClassName}__image-wrapper place-card__image-wrapper`}>
+      <div className={`${pageType}__image-wrapper place-card__image-wrapper`}>
         <Link to={`/offer/${id}`}>
           <img
             className="place-card__image"
-            src={previewImage} width={placeCardClassName === PlaceCardClassName.Main ? '260' : '150'}
-            height={placeCardClassName === PlaceCardClassName.Main ? '200' : '110'}
+            src={previewImage} width={pageType !== PageType.Favorite ? '260' : '150'}
+            height={pageType !== PageType.Favorite ? '200' : '110'}
             alt="Place"
           />
         </Link>
       </div>
-      <div className={`${placeCardClassName === PlaceCardClassName.Favorite ? 'favorites__card-info' : ''} place-card__info`}>
+      <div className={`${pageType === PageType.Favorite ? 'favorites__card-info' : ''} place-card__info`}>
         <div className="place-card__price-wrapper">
           <div className="place-card__price">
             <b className="place-card__price-value">&euro;{price}</b>
