@@ -7,12 +7,11 @@ import { setFavoriteStatusAction } from '../../store/api-actions';
 
 type PlaceCardScreenProps = {
   offer: Offer
-  getActiveCard?: ((offer: Offer | undefined) => void) | undefined
+  setActiveCard?: ((offer: Offer | undefined) => void) | undefined
   pageType: string
-  updateType?: string
 }
 
-export default function PlaceCard({ offer, getActiveCard, pageType, updateType }: PlaceCardScreenProps): JSX.Element {
+export default function PlaceCard({ offer, setActiveCard, pageType }: PlaceCardScreenProps): JSX.Element {
   const { id, title, isPremium, isFavorite, previewImage, price, type, rating } = offer;
   const dispatch = useAppDispatch();
 
@@ -20,7 +19,6 @@ export default function PlaceCard({ offer, getActiveCard, pageType, updateType }
     dispatch(setFavoriteStatusAction({
       currentId: id,
       status: isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite,
-      update: updateType
     }));
   };
 
@@ -29,13 +27,13 @@ export default function PlaceCard({ offer, getActiveCard, pageType, updateType }
       id={String(id)}
       className={`${pageType}__card place-card`}
       onMouseOver={() => {
-        if (getActiveCard) {
-          getActiveCard(offer);
+        if (setActiveCard) {
+          setActiveCard(offer);
         }
       }}
       onMouseLeave={() => {
-        if (getActiveCard) {
-          getActiveCard(undefined);
+        if (setActiveCard) {
+          setActiveCard(undefined);
         }
       }}
     >

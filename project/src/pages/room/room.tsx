@@ -3,7 +3,7 @@ import PlacesCardList from '../../components/places-card-list/places-card-list';
 import ReviewList from '../../components/review-list/review-list';
 import ReviewForm from '../../components/rewiew-form/review-form';
 import Map from '../../components/map/map';
-import { AuthorizationStatus, FavoriteStatus, PageType, UpdateType } from '../../const/enums';
+import { AuthorizationStatus, FavoriteStatus, PageType } from '../../const/enums';
 import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { convertRating } from '../../utils/common';
@@ -30,7 +30,6 @@ export default function Room(): JSX.Element {
     dispatch(setFavoriteStatusAction({
       currentId: currentId,
       status: offer.isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite,
-      update: UpdateType.CurrentOffer
     }));
   };
 
@@ -151,7 +150,7 @@ export default function Room(): JSX.Element {
             <div className="near-places__list places__list">
               {
                 nearbyOffers ?
-                  <PlacesCardList offers={nearbyOffers} pageType={PageType.Room} updateType={UpdateType.Nearby} /> : ''
+                  <PlacesCardList offers={nearbyOffers} pageType={PageType.Room} /> : ''
               }
             </div>
           </section>

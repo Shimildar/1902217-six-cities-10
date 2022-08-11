@@ -54,7 +54,7 @@ export default function Main(): JSX.Element {
                   <b className="places__found">{currentOffers.length} places to stay in {city}</b>
                   <SortList activeSortItem={activeSortItem} setActiveSortItem={setActiveSortItem} />
                   <div className="cities__places-list places__list tabs__content">
-                    <PlacesCardList offers={currentOffers} activeSortItem={activeSortItem} getActiveCard={setActiveCard} pageType={PageType.Main} />
+                    <PlacesCardList offers={currentOffers} activeSortItem={activeSortItem} setActiveCard={setActiveCard} pageType={PageType.Main} />
                   </div>
                 </section>
                 <div className="cities__right-section">

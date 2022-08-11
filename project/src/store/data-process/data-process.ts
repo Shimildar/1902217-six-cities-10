@@ -67,12 +67,12 @@ export const offersData = createSlice({
         }
       })
       .addCase(updateNearbyOffers, (state, action) => {
-        if (state.loadedState.isNearbyLoaded) {
+        if (state.loadedState.isNearbyLoaded && state.nearbyOffers.some((item) => item.id === action.payload.id)) {
           state.nearbyOffers = replaceOffer(state.nearbyOffers, action.payload);
         }
       })
       .addCase(updateCurrentOffer, (state, action) => {
-        if (state.currentOffer !== undefined) {
+        if (state.currentOffer !== undefined && state.currentOffer.id === action.payload.id) {
           state.currentOffer = action.payload;
         }
       })

@@ -3,7 +3,7 @@ import { AxiosInstance } from 'axios';
 import { AppDispatch, State } from '../types/state';
 import { redirectToRoute, updateComments, updateCurrentOffer, updateFavoriteOffers, updateNearbyOffers, updateOffers } from './action';
 import { Offer } from '../types/offer';
-import { APIRoute, AppRoute, UpdateType } from '../const/enums';
+import { APIRoute, AppRoute } from '../const/enums';
 import { dropUserData, saveUserData } from '../services/user-data';
 import { UserData } from '../types/user-data';
 import { AuthData } from '../types/auth-data';
@@ -77,28 +77,14 @@ export const setFavoriteStatusAction = createAsyncThunk<void, FavoriteStatusData
   extra: AxiosInstance
 }>(
   'favorite/setFavoriteStatus',
-  async ({ currentId, status, update }, { dispatch, extra: api }) => {
+  async ({ currentId, status }, { dispatch, extra: api }) => {
     try {
       const { data } = await api.post<Offer>(`${APIRoute.Favorite}/${currentId}/${status}`);
-      switch (update) {
-        case UpdateType.CurrentOffer:
-          dispatch(updateCurrentOffer(data));
-          dispatch(updateFavoriteOffers(data));
-          dispatch(updateOffers(data));
-          break;
-        case UpdateType.Nearby:
-          dispatch(updateFavoriteOffers(data));
-          dispatch(updateNearbyOffers(data));
-          dispatch(updateOffers(data));
-          break;
-        default:
-          dispatch(updateCurrentOffer(data));
-          dispatch(updateFavoriteOffers(data));
-          dispatch(updateNearbyOffers(data));
-          dispatch(updateOffers(data));
-          break;
-      }
 
+      dispatch(updateCurrentOffer(data));
+      dispatch(updateFavoriteOffers(data));
+      dispatch(updateNearbyOffers(data));
+      dispatch(updateOffers(data));
     } catch {
       dispatch(redirectToRoute(AppRoute.Login));
     }

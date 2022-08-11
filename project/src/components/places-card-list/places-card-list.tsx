@@ -7,17 +7,16 @@ type PlacesCardListProps = {
   offers: Offer[]
   activeSortItem?: string
   pageType: string
-  updateType?: string
-  getActiveCard?: ((offer: Offer | undefined) => void) | undefined
+  setActiveCard?: ((offer: Offer | undefined) => void) | undefined
 }
 
-function PlacesCardList({ offers, activeSortItem, pageType, updateType, getActiveCard }: PlacesCardListProps): JSX.Element {
+function PlacesCardList({ offers, activeSortItem, pageType, setActiveCard }: PlacesCardListProps): JSX.Element {
 
   const currentOffers = activeSortItem ? getSortedOffers(offers, activeSortItem) : offers;
 
   return (
     <>
-      {currentOffers.map((offer: Offer) => <PlaceCard key={offer.id} offer={offer} getActiveCard={getActiveCard} pageType={pageType} updateType={updateType} />)}
+      {currentOffers.map((offer: Offer) => <PlaceCard key={offer.id} offer={offer} setActiveCard={setActiveCard} pageType={pageType} />)}
     </>
   );
 }
