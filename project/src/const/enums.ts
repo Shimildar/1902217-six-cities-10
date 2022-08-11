@@ -12,9 +12,10 @@ enum AuthorizationStatus {
   Unknown = 'UNKNOWN',
 }
 
-enum PlaceCardClassName {
+enum PageType {
   Main = 'cities',
-  Favorite = 'favorites'
+  Favorite = 'favorites',
+  Room = 'near-places'
 }
 
 enum CityType {
@@ -44,7 +45,17 @@ enum APIRoute {
 enum NameSpace {
   Data = 'DATA',
   User = 'USER',
-  AppAction = 'AppAction'
+  AppAction = 'APP_ACTION'
 }
 
-export { AppRoute, AuthorizationStatus, PlaceCardClassName, CityType, SortType, APIRoute, NameSpace };
+enum FavoriteStatus {
+  Favorite = 1,
+  NotFavorite = 0
+}
+
+enum UpdateType {
+  CurrentOffer = 'CURRENT_OFFER',
+  Nearby = 'NEARBY'
+}
+
+export { AppRoute, AuthorizationStatus, PageType, CityType, SortType, APIRoute, NameSpace, FavoriteStatus, UpdateType };

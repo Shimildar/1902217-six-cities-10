@@ -6,17 +6,17 @@ import PlaceCard from '../place-card/place-card';
 type PlacesCardListProps = {
   offers: Offer[]
   activeSortItem?: string
-  placeCardClassName: string
-  getActiveCard?: ((offer: Offer | undefined) => void) | undefined
+  pageType: string
+  setActiveCard?: ((offer: Offer | undefined) => void) | undefined
 }
 
-function PlacesCardList({ offers, activeSortItem, placeCardClassName, getActiveCard }: PlacesCardListProps): JSX.Element {
+function PlacesCardList({ offers, activeSortItem, pageType, setActiveCard }: PlacesCardListProps): JSX.Element {
 
   const currentOffers = activeSortItem ? getSortedOffers(offers, activeSortItem) : offers;
 
   return (
     <>
-      {currentOffers.map((offer: Offer) => <PlaceCard key={offer.id} offer={offer} getActiveCard={getActiveCard} placeCardClassName={placeCardClassName} />)}
+      {currentOffers.map((offer: Offer) => <PlaceCard key={offer.id} offer={offer} setActiveCard={setActiveCard} pageType={pageType} />)}
     </>
   );
 }

@@ -3,70 +3,52 @@ import PlacesCardList from '../../components/places-card-list/places-card-list';
 import ReviewList from '../../components/review-list/review-list';
 import ReviewForm from '../../components/rewiew-form/review-form';
 import Map from '../../components/map/map';
-import { APIRoute, AppRoute, AuthorizationStatus, PlaceCardClassName } from '../../const/enums';
-import { Offer } from '../../types/offer';
-import { useState } from 'react';
-import { useNavigate, useParams } from 'react-router-dom';
-import { api } from '../../store';
+import { AuthorizationStatus, FavoriteStatus, PageType } from '../../const/enums';
+import { useEffect } from 'react';
+import { useParams } from 'react-router-dom';
 import { convertRating } from '../../utils/common';
 import RoomImage from '../../components/room-image/room-image';
 import Goods from '../../components/goods/goods';
-import { useAppSelector } from '../../hooks';
-import { Review } from '../../types/review';
-import { toast } from 'react-toastify';
+import { useAppDispatch, useAppSelector } from '../../hooks';
 import { getAuthorizationStatus } from '../../store/user-process/selectors';
+import { fetchCurrentOfferAction, fetchFavoriteOffersAction, fetchNearbyOffersAction, setFavoriteStatusAction } from '../../store/api-actions';
+import { getFavoriteOffers, getNearbyOffers, getOffer } from '../../store/data-process/selectors';
 
 export default function Room(): JSX.Element {
   const { id } = useParams();
-  const [offer, setOffer] = useState<Offer | null>(null);
-  const [neighbourhoodOffers, setNeighbourhoodOffers] = useState<Offer[]>([]);
-  const [comments, setComments] = useState<Review[]>([]);
-
-  const navigate = useNavigate();
-  const isAuth = useAppSelector(getAuthorizationStatus) === AuthorizationStatus.Auth;
-
+  const currentId = Number(id);
+  const offer = useAppSelector(getOffer);
+  const nearbyOffers = useAppSelector(getNearbyOffers);
+  const favoriteCount = useAppSelector(getFavoriteOffers).length;
   let offersForMap;
 
-  const getOffer = async () => {
-    try {
-      const { data } = await api.get<Offer>(`${APIRoute.Offers}/${id}`);
-      setOffer(data);
-    } catch (error) {
-      navigate(AppRoute.NotFoundScreen);
-    }
-  };
+  const dispatch = useAppDispatch();
 
-  const getNeighbourhoodOffers = async () => {
-    try {
-      const { data } = await api.get<Offer[]>(`${APIRoute.Offers}/${id}/nearby`);
-      setNeighbourhoodOffers(data);
-    } catch (error) {
-      toast.warn('Can not find nearby offers');
-    }
-  };
+  const isAuth = useAppSelector(getAuthorizationStatus) === AuthorizationStatus.Auth;
 
-  const getComments = async () => {
-    try {
-      const { data } = await api.get<Review[]>(`${APIRoute.Comments}/${id}`);
-      setComments(data);
-    } catch (error) {
-      toast.warn('Can not find comments');
-    }
+  const handleFavoriteClick = () => {
+    dispatch(setFavoriteStatusAction({
+      currentId: currentId,
+      status: offer.isFavorite ? FavoriteStatus.NotFavorite : FavoriteStatus.Favorite,
+    }));
   };
-
-  if (offer === null || offer?.id !== Number(id)) {
-    getOffer();
-    getNeighbourhoodOffers();
-    getComments();
-  }
 
   if (offer !== null) {
-    offersForMap = neighbourhoodOffers.slice(0, 3).concat(offer);
+    offersForMap = nearbyOffers.slice(0, 3).concat(offer);
   }
+
+  useEffect(() => {
+    dispatch(fetchFavoriteOffersAction());
+    if (offer === undefined || offer.id !== currentId) {
+      dispatch(fetchCurrentOfferAction(currentId));
+      dispatch(fetchNearbyOffersAction(currentId));
+    }
+  }, [currentId, dispatch, offer]
+  );
 
   return (
     <div className="page">
-      <Header />.
+      <Header count={favoriteCount} />.
 
       <main className="page__main page__main--property">
         <section className="property">
@@ -89,8 +71,12 @@ export default function Room(): JSX.Element {
                 <h1 className="property__name">
                   {offer?.title}
                 </h1>
-                <button className={`property__bookmark-button ${offer?.isFavorite && 'place-card__bookmark-button--active'} button`} type="button">
-                  <svg className="property__bookmark-icon" width="31" height="33">
+                <button
+                  className={`property__bookmark-button ${offer?.isFavorite && 'property__bookmark-button--active'} button`}
+                  type="button"
+                  onClick={handleFavoriteClick}
+                >
+                  <svg className="place-card__bookmark-icon" width="31" height="33">
                     <use xlinkHref="#icon-bookmark"></use>
                   </svg>
                   <span className="visually-hidden">To bookmarks</span>
@@ -144,9 +130,9 @@ export default function Room(): JSX.Element {
                 </div>
               </div>
               <section className="property__reviews reviews">
-                <ReviewList reviews={comments} />
+                <ReviewList id={currentId} />
                 {
-                  isAuth && <ReviewForm setComments={setComments} />
+                  isAuth && <ReviewForm id={currentId} />
                 }
               </section>
             </div>
@@ -160,11 +146,11 @@ export default function Room(): JSX.Element {
         </section>
         <div className="container">
           <section className="near-places places">
-            <h2 className="near-places__title">Other places in the neighbourhood</h2>
+            <h2 className="near-places__title">{nearbyOffers.length !== 0 ? 'Other places in the neighbourhood' : 'There are no neighbourhood offers'}</h2>
             <div className="near-places__list places__list">
               {
-                neighbourhoodOffers ?
-                  <PlacesCardList offers={neighbourhoodOffers} placeCardClassName={PlaceCardClassName.Main} /> : ''
+                nearbyOffers ?
+                  <PlacesCardList offers={nearbyOffers} pageType={PageType.Room} /> : ''
               }
             </div>
           </section>
