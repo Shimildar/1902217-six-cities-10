@@ -4,7 +4,7 @@ import ReviewList from '../../components/review-list/review-list';
 import ReviewForm from '../../components/rewiew-form/review-form';
 import Map from '../../components/map/map';
 import { AuthorizationStatus, FavoriteStatus, PageType } from '../../const/enums';
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { convertRating } from '../../utils/common';
 import RoomImage from '../../components/room-image/room-image';
