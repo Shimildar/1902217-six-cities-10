@@ -5,13 +5,14 @@ import CityList from '../../components/city-list/city-list';
 import SortList from '../../components/sort-list/sort-list';
 import Map from '../../components/map/map';
 import { Offer } from '../../types/offer';
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useAppDispatch, useAppSelector } from '../../hooks/index';
 import { selectCity } from '../../store/action';
 import { getOffers } from '../../store/data-process/selectors';
 import { getCity } from '../../store/app-action-process/selectors';
 import MainEmpty from '../../components/main-empty/main-empty';
 import { fetchOffersAction } from '../../store/api-actions';
+import { getSortedOffers } from '../../utils/sort';
 
 export default function Main(): JSX.Element {
   const [activeCard, setActiveCard] = useState<Offer | undefined>(undefined);
@@ -32,7 +33,8 @@ export default function Main(): JSX.Element {
   const setCity = useCallback((cityItem: string) => dispatch(selectCity(cityItem)), [dispatch]);
 
   const favoriteCount = offers.filter((offer) => offer.isFavorite).length;
-  const currentOffers = useMemo(() => offers.filter((offer) => offer.city.name === city), [offers, city]);
+  const sortedByCityOffers = offers.filter((offer) => offer.city.name === city);
+  const currentOffers = getSortedOffers(sortedByCityOffers, activeSortItem);
 
   const isEmpty = currentOffers.length === 0;
 
@@ -54,7 +56,7 @@ export default function Main(): JSX.Element {
                   <b className="places__found">{currentOffers.length} places to stay in {city}</b>
                   <SortList activeSortItem={activeSortItem} setActiveSortItem={setActiveSortItem} />
                   <div className="cities__places-list places__list tabs__content">
-                    <PlacesCardList offers={currentOffers} activeSortItem={activeSortItem} setActiveCard={setActiveCard} pageType={PageType.Main} />
+                    <PlacesCardList offers={currentOffers} setActiveCard={setActiveCard} pageType={PageType.Main} />
                   </div>
                 </section>
                 <div className="cities__right-section">

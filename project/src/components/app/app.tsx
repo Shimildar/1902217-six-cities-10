@@ -5,7 +5,8 @@ import Login from '../../pages/login/login';
 import Favorites from '../../pages/favorites/favorites';
 import Room from '../../pages/room/room';
 import NotFoundScreen from '../../pages/not-found-screen/not-found-screen';
-import PrivateRoute from '../private-route/private-route';
+import FavoritesPrivateRoute from '../favorites-private-route/favorites-private-route';
+import LoginPrivateRoute from '../login-private-route/private-route-login';
 import LoadingScreen from '../../pages/loading-screen/loading-screen';
 import { useAppSelector } from '../../hooks';
 import HistoryRouter from '../history-route/history-route';
@@ -32,14 +33,18 @@ export default function App(): JSX.Element {
         />
         <Route
           path={AppRoute.Login}
-          element={<Login />}
+          element={
+            <LoginPrivateRoute authorizationStatus={authorizationStatus}>
+              <Login />
+            </LoginPrivateRoute>
+          }
         />
         <Route
           path={AppRoute.Favorites}
           element={
-            <PrivateRoute authorizationStatus={authorizationStatus}>
+            <FavoritesPrivateRoute authorizationStatus={authorizationStatus}>
               <Favorites />
-            </ PrivateRoute>
+            </ FavoritesPrivateRoute>
           }
         />
         <Route

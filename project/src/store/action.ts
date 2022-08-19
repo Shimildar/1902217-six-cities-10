@@ -5,7 +5,7 @@ import { Review } from '../types/review';
 
 export const selectCity = createAction<string>('main/selectCity');
 
-export const redirectToRoute = createAction<AppRoute>('game/redirectToRoute');
+export const redirectToRoute = createAction<AppRoute>('main/redirectToRoute');
 
 export const updateOffers = createAction<Offer>('main/updateOffers');
 
