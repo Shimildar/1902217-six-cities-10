@@ -1,5 +1,3 @@
-import { AppRoute } from '../../const/enums';
-import { Link } from 'react-router-dom';
 import Logo from '../../components/logo/logo';
 
 export default function NotFoundScreen(): JSX.Element {
@@ -14,7 +12,7 @@ export default function NotFoundScreen(): JSX.Element {
       </div>
       <div style={{ textAlign: 'center' }}>
         <h1>404. Страница не найдена</h1>
-        <Link style={{ color: 'blue' }} to={AppRoute.Main}>Вернуться на главную</Link>
+        <p >Попробуйте перезагрузить страницу.</p>
       </div>
     </div>
   );
